@@ -10,6 +10,13 @@ maxdelta = 300
 dataset = []
 actset = []
 act_dic = {'100':'EXPOSE', '200':'TICK', '900':'DOWNLOAD', '905':'UPDATEIT', '305':'SETUP', '500':'OPEN'}
+scene_dic = {'2008':'详情页', '200807':'标签详情页', '200802':'详情页评论', '2023':'开发者其他应用详情', \
+			'201001':'更新管理', '2039':'猜你喜欢', '204101':'飙升榜', '204102':'经典榜', \
+			'204103':'个性榜', '204104':'好友榜', '200501':'软件首页', '20050304':'分类页子标签页', \
+			'200503':'分类首页', '200502':'软件排行', '200601':'游戏首页', '200603':'游戏分类页', \
+			'20060301':'游戏分类详情', '200602':'游戏排行', '201002':'下载管理', '202912':'身边的人在玩', \
+			'202907':'好友圈流行', '202913':'用户属性维度', '202914':'应用标签', '2001':'发现首页', \
+			'2002':'首页－必备', '2003':'首页－最热', '200504':'软件－专题', '200505':'软件－小红花', '200506':'软件－腾讯'}
 
 class Everyday:
 	def __init__(self, line):
@@ -28,13 +35,19 @@ class Everyday:
 		self.type = line[12]
 		self.mf = line[13]
 		self.toprint = '    ' + line[7] + ' '
-		temp = 'UNKNOWN'
+		temp = line[5]
 		if act_dic.has_key(line[5]):
 			temp = act_dic[line[5]]
 		self.toprint += temp + ' ' + line[3]
 		if self.app_version != '':
 			self.toprint += '(' + line[4] + ')'
-		self.toprint += ' in ' + line[1] + ' from ' + line[2] + ' under ' + line[8]
+		scene1 = line[1]
+		scene2 = line[2]
+		if scene_dic.has_key(line[1]):
+			scene1 = scene_dic[line[1]]
+		if scene_dic.has_key(line[2]):
+			scene2 = scene_dic[line[2]]
+		self.toprint += ' in ' + scene1 + ' from ' + scene2 + ' under ' + line[8]
 		if line[10] != '-1':
 			self.toprint += ' (mod=' + line[10] + ')'
 		if int(line[12]) == 1:
@@ -69,7 +82,9 @@ for i in range(1, 11):
 	actset = []
 	count = 0
 	readdata(prefix + str(i))
+	rp = dataset[0]
 	fout = open('act_best' + str(i), 'w')
+	fout.write(rp.imei + ' ' + rp.mf + ' ' + rp.resolution + '\n')
 	for j in range(len(dataset)):
 		if j == 0 or dataset[j].date != dataset[j-1].date:
 			fout.write('\n' + dataset[j].date + '\n')
