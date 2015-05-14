@@ -28,12 +28,15 @@ class Everyday:
 		self.type = line[12]
 		self.mf = line[13]
 		self.toprint = '    ' + line[7] + ' '
-		self.toprint += act_dic[line[5]] + ' ' + line[3]
+		temp = 'UNKNOWN'
+		if act_dic.has_key(line[5]):
+			temp = act_dic[line[5]]
+		self.toprint += temp + ' ' + line[3]
 		if self.app_version != '':
 			self.toprint += '(' + line[4] + ')'
-		self.toprint += ' in' + line[1] + ' from' + line[2] + ' under' + line[8] + ' '
+		self.toprint += ' in ' + line[1] + ' from ' + line[2] + ' under ' + line[8]
 		if line[10] != '-1':
-			self.toprint += '(mod=' + line[10] + ')'
+			self.toprint += ' (mod=' + line[10] + ')'
 		if int(line[12]) == 1:
 			self.toprint += ' BY AUTO'
 		if int(line[12]) == 2:
@@ -43,11 +46,11 @@ def readdata(filename):
 	fin = open(filename, 'r')
 	raw_data = fin.readlines()
 	for temp in raw_data:
-		data = temp.strip().split('	')
+		data = temp.strip().split(' ')
 		item = Everyday(data)
 		dataset.append(item)
 
-def examine(datastr1, datastr2, timestr1, timestr2):
+def examine(datestr1, datestr2, timestr1, timestr2):
 	date1 = datestr1.strip().split('-')
 	date2 = datestr2.strip().split('-')
 	time1 = timestr1.strip().split(':')
@@ -66,7 +69,7 @@ for i in range(1, 11):
 	actset = []
 	count = 0
 	readdata(prefix + str(i))
-	fout = open('act_best' + str(i))
+	fout = open('act_best' + str(i), 'w')
 	for j in range(len(dataset)):
 		if j == 0 or dataset[j].date != dataset[j-1].date:
 			fout.write('\n' + dataset[j].date + '\n')
@@ -77,7 +80,8 @@ for i in range(1, 11):
 					actset.append(dataset[k].toprint)
 				else:
 					break
-			fout.write('	#' + str(count++))
+			count += 1
+			fout.write('	#' + str(count) + '\n')
 			while len(actset):
 				fout.write(actset.pop() + '\n')
 	fout.close()
