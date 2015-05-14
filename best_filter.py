@@ -74,7 +74,7 @@ for i in range(1, 11):
 		if j == 0 or dataset[j].date != dataset[j-1].date:
 			fout.write('\n' + dataset[j].date + '\n')
 		if dataset[j].act_id == '900':
-			actset.append(dataset[j].toprint)
+			#actset.append(dataset[j].toprint)
 			for k in range(j, -1, -1):
 				if examine(dataset[j].date, dataset[k].date, dataset[j].time, dataset[k].time):
 					actset.append(dataset[k].toprint)
